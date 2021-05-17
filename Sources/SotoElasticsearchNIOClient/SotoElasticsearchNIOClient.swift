@@ -11,6 +11,10 @@ public struct SotoElasticsearchClient {
         self.elasticSearchClient = ElasticsearchClient(requester: requester, eventLoop: eventLoop, logger: logger, scheme: scheme, host: host, port: port, username: username, password: password, jsonEncoder: jsonEncoder, jsonDecoder: jsonDecoder)
     }
 
+    public func get<Document: Decodable>(id: String, from indexName: String) -> EventLoopFuture<ESGetSingleDocumentResponse<Document>> {
+        self.elasticSearchClient.get(id: id, from: indexName)
+    }
+
     public func bulk<Document: Encodable>(_ operations: [ESBulkOperation<Document>]) -> EventLoopFuture<ESBulkResponse> {
         self.elasticSearchClient.bulk(operations)
     }
@@ -25,6 +29,10 @@ public struct SotoElasticsearchClient {
 
     public func updateDocument<Document: Encodable>(_ document: Document, id: String, in indexName: String) -> EventLoopFuture<ESUpdateDocumentResponse> {
         self.elasticSearchClient.updateDocument(document, id: id, in: indexName)
+    }
+
+    public func updateDocumentWithScript<Script: Encodable>(_ script: Script, id: String, in indexName: String) -> EventLoopFuture<ESUpdateDocumentResponse> {
+        self.elasticSearchClient.updateDocumentWithScript(script, id: id, in: indexName)
     }
 
     public func deleteDocument(id: String, from indexName: String) -> EventLoopFuture<ESDeleteDocumentResponse> {

@@ -9,7 +9,7 @@ class ElasticSearchIntegrationTests: XCTestCase {
 
     // MARK: - Properties
     var eventLoopGroup: MultiThreadedEventLoopGroup!
-    var client: ElasticsearchClient!
+    var client: SotoElasticsearchClient!
     var httpClient: HTTPClient!
    var awsClient: AWSClient!
     let indexName = "some-index"
@@ -20,7 +20,7 @@ class ElasticSearchIntegrationTests: XCTestCase {
         let logger = Logger(label: "io.brokenhands.swift-soto-elasticsearch.test")
         httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
        awsClient = AWSClient(credentialProvider: .static(accessKeyId: "SOMETHING", secretAccessKey: "SOMETHINGLESE"), httpClientProvider: .shared(httpClient), logger: logger)
-       client = ElasticsearchClient(eventLoop: eventLoopGroup.next(), logger: logger, awsClient: awsClient, httpClient: httpClient, scheme: "http", host: "localhost", port: 9200)
+        client = SotoElasticsearchClient(awsClient: awsClient, eventLoop: eventLoopGroup.next(), logger: logger, httpClient: httpClient, scheme: "http", host: "localhost", port: 9200)
         _ = try client.deleteIndex("_all").wait()
     }
 

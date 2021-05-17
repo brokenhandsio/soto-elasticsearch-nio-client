@@ -12,7 +12,7 @@ let package = Package(
         .library(name: "SotoElasticsearchNIOClient", targets: ["SotoElasticsearchNIOClient"])
     ],
     dependencies: [
-        .package(url: "https://github.com/brokenhandsio/elasticsearch-nio-client.git", .branch("split-soto")),
+        .package(url: "https://github.com/brokenhandsio/elasticsearch-nio-client.git", from: "0.4.0"),
         .package(url: "https://github.com/soto-project/soto.git", from: "5.0.0"),
     ],
     targets: [

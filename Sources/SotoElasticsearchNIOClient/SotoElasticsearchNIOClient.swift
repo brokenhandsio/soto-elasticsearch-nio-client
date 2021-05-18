@@ -51,6 +51,19 @@ public struct SotoElasticsearchClient {
         self.elasticSearchClient.searchDocumentsPaginated(from: indexName, searchTerm: searchTerm, size: size, offset: offset, type: type)
     }
 
+    public func searchDocumentsCount<Query: Encodable>(from indexName: String, query: Query) -> EventLoopFuture<ESCountResponse> {
+        self.elasticSearchClient.searchDocumentsCount(from: indexName, query: query)
+    }
+
+
+    public func searchDocumentsPaginated<Document: Decodable, QueryBody: Encodable>(from indexName: String, queryBody: QueryBody, size: Int = 10, offset: Int = 0, type: Document.Type = Document.self) -> EventLoopFuture<ESGetMultipleDocumentsResponse<Document>> {
+        self.elasticSearchClient.searchDocumentsPaginated(from: indexName, queryBody: queryBody, size: size, offset: offset, type: type)
+    }
+
+    public func customSearch<Document: Decodable, Query: Encodable>(from indexName: String, query: Query, type: Document.Type = Document.self) -> EventLoopFuture<ESGetMultipleDocumentsResponse<Document>> {
+        self.elasticSearchClient.customSearch(from: indexName, query: query, type: type)
+    }
+
     public func deleteIndex(_ name: String) -> EventLoopFuture<ESDeleteIndexResponse> {
         self.elasticSearchClient.deleteIndex(name)
     }

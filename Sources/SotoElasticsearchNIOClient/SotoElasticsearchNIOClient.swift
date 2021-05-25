@@ -6,9 +6,9 @@ import Foundation
 public struct SotoElasticsearchClient {
     public let elasticSearchClient: ElasticsearchClient
 
-    public init(awsClient: AWSClient, region: Region? = nil, eventLoop: EventLoop, logger: Logger, httpClient: HTTPClient, scheme: String = "http", host: String, port: Int? = 9200, username: String? = nil, password: String? = nil, jsonEncoder: JSONEncoder = JSONEncoder(), jsonDecoder: JSONDecoder = JSONDecoder()) {
-        let requester = SotoElasticsearchRequester(awsClient: awsClient, region: region, eventLoop: eventLoop, logger: logger, client: httpClient)
-        self.elasticSearchClient = ElasticsearchClient(requester: requester, eventLoop: eventLoop, logger: logger, scheme: scheme, host: host, port: port, username: username, password: password, jsonEncoder: jsonEncoder, jsonDecoder: jsonDecoder)
+    public init(awsClient: AWSClient, region: Region? = nil, eventLoop: EventLoop, context: LoggingContext, httpClient: HTTPClient, scheme: String = "http", host: String, port: Int? = 9200, username: String? = nil, password: String? = nil, jsonEncoder: JSONEncoder = JSONEncoder(), jsonDecoder: JSONDecoder = JSONDecoder()) {
+        let requester = SotoElasticsearchRequester(awsClient: awsClient, region: region, eventLoop: eventLoop, context: context, client: httpClient)
+        self.elasticSearchClient = ElasticsearchClient(requester: requester, eventLoop: eventLoop, context: context, scheme: scheme, host: host, port: port, username: username, password: password, jsonEncoder: jsonEncoder, jsonDecoder: jsonDecoder)
     }
 
     public func get<Document: Decodable>(id: String, from indexName: String) -> EventLoopFuture<ESGetSingleDocumentResponse<Document>> {

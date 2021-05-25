@@ -8,7 +8,7 @@ struct SotoElasticsearchRequester: ElasticsearchRequester {
     let awsClient: AWSClient
     let region: Region?
     let eventLoop: EventLoop
-    let logger: Logger
+    let context: LoggingContext
     let client: HTTPClient
 
     func executeRequest(url urlString: String, method: HTTPMethod, headers: HTTPHeaders, body: ByteBuffer?) -> EventLoopFuture<HTTPClient.Response> {
@@ -22,7 +22,7 @@ struct SotoElasticsearchRequester: ElasticsearchRequester {
         } else {
             awsBody = .empty
         }
-        return es.signHeaders(url: url, httpMethod: method, headers: headers, body: awsBody).flatMap { headers in
+        return es.signHeaders(url: url, httpMethod: method, headers: headers, body: awsBody, context: context).flatMap { headers in
             let request: HTTPClient.Request
             do {
                 request = try HTTPClient.Request(url: url, method: method, headers: headers, body: awsBody.asByteBuffer().map { .byteBuffer($0) }
@@ -30,12 +30,12 @@ struct SotoElasticsearchRequester: ElasticsearchRequester {
             } catch {
                 return self.eventLoop.makeFailedFuture(error)
             }
-            self.logger.trace("Request: \(request)")
+            self.context.logger.trace("Request: \(request)")
             if let requestBody = body {
                 let bodyString = String(buffer: requestBody)
-                self.logger.trace("Request body: \(bodyString)")
+                self.context.logger.trace("Request body: \(bodyString)")
             }
-            return self.client.execute(request: request, eventLoop: HTTPClient.EventLoopPreference.delegateAndChannel(on: self.eventLoop), logger: self.logger)
+            return self.client.execute(request: request, eventLoop: HTTPClient.EventLoopPreference.delegateAndChannel(on: self.eventLoop), logger: self.context.logger)
         }
     }
 }

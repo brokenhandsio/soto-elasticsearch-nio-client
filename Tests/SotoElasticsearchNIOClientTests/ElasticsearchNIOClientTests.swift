@@ -4,6 +4,7 @@ import NIO
 import AsyncHTTPClient
 import Logging
 import SotoElasticsearchService
+import Baggage
 
 class ElasticSearchIntegrationTests: XCTestCase {
 
@@ -11,7 +12,7 @@ class ElasticSearchIntegrationTests: XCTestCase {
     var eventLoopGroup: MultiThreadedEventLoopGroup!
     var client: SotoElasticsearchClient!
     var httpClient: HTTPClient!
-   var awsClient: AWSClient!
+    var awsClient: AWSClient!
     let indexName = "some-index"
 
     // MARK: - Overrides
@@ -19,13 +20,14 @@ class ElasticSearchIntegrationTests: XCTestCase {
         eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 1)
         let logger = Logger(label: "io.brokenhands.swift-soto-elasticsearch.test")
         httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
-       awsClient = AWSClient(credentialProvider: .static(accessKeyId: "SOMETHING", secretAccessKey: "SOMETHINGLESE"), httpClientProvider: .shared(httpClient), logger: logger)
-        client = SotoElasticsearchClient(awsClient: awsClient, eventLoop: eventLoopGroup.next(), logger: logger, httpClient: httpClient, scheme: "http", host: "localhost", port: 9200)
+        let context = DefaultLoggingContext.topLevel(logger: logger)
+        awsClient = AWSClient(credentialProvider: .static(accessKeyId: "SOMETHING", secretAccessKey: "SOMETHINGLESE"), httpClientProvider: .shared(httpClient), logger: logger)
+        client = SotoElasticsearchClient(awsClient: awsClient, eventLoop: eventLoopGroup.next(), context: context, httpClient: httpClient, scheme: "http", host: "localhost", port: 9200)
         _ = try client.deleteIndex("_all").wait()
     }
 
     override func tearDownWithError() throws {
-       try awsClient.syncShutdown()
+        try awsClient.syncShutdown()
         try httpClient.syncShutdown()
         try eventLoopGroup.syncShutdownGracefully()
     }

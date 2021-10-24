@@ -72,7 +72,7 @@ public struct SotoElasticsearchClient {
         self.elasticSearchClient.checkIndexExists(name)
     }
 
-    public func customRequest(path: String, method: HTTPMethod, headers: HTTPHeaders = .init(), body: ByteBuffer?) -> EventLoopFuture<HTTPClient.Response> {
-        self.elasticSearchClient.customRequest(path: path, method: method, headers: headers, body: body)
+    public func customRequest(path: String, method: HTTPMethod, headers: HTTPHeaders = .init(), body: ByteBuffer?, queryItems: [URLQueryItem] = []) -> EventLoopFuture<HTTPClient.Response> {
+        self.elasticSearchClient.customRequest(path: path, method: method, headers: headers, body: body, queryItems: queryItems)
     }
 }

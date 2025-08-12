@@ -18,7 +18,7 @@ jobs:
         env:
           discovery.type: single-node
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Test
       run: swift test --enable-test-discovery --sanitize=thread
 
